@@ -1,0 +1,117 @@
+<html>
+  <head>
+    <title>New Contents</title>
+
+    <style>
+        img {
+            width: 250px;
+            height: 250px;
+        }
+
+        div#output {
+          width: 600px;
+          height: 200px;
+          background-color: bisque;
+          overflow-y: scroll;
+        }
+    </style>
+  </head>
+  <body>
+
+    <h1>Topics</h1>
+    
+    <ul>
+      <li>Inline Javascript</li>
+      <li>Outputting messages</li>
+      <li>Methods and "this"</li>
+      <li>Dynamic Images</li>
+      <li>Loot Chance</li>
+    </ul>
+
+    <img src="" />
+    <button>Display Image</button>
+
+    <button id="dropSystem">Loot</button>
+
+    <div id="output"></div>
+
+    <script>
+      //Dynamic Images
+      var images = [
+          {
+              name: "Senna",
+              image: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Senna_0.jpg"
+          },
+          {
+              name: "Fizz",
+              image: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Fizz_3.jpg"
+          },
+          {
+              name: "Neeko",
+              image: "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Neeko_0.jpg"
+          }
+      ];
+
+      var imgTag = document.querySelectorAll("img")[0];
+      var buttonTag = document.querySelector("button");
+
+      buttonTag.addEventListener("click", pickRandomImage);
+
+      function pickRandomImage() {
+          
+          var randomNumber = Math.floor(Math.random() * images.length);
+
+          var imageUrl = images[randomNumber].image; 
+
+          imgTag.src = imageUrl;
+      }
+
+      //Loot Chances
+      var items = [
+          {
+              name: "Great Axe",
+              chance: 0.15
+          },
+          {
+              name: "Long Bow",
+              chance: 0.30
+          },
+          {
+              name: "spear",
+              chance: 0.09
+          }
+      ]
+
+      var dropSystem = document.getElementById("dropSystem");
+      dropSystem.addEventListener("click", pickLoot);
+      
+      function pickLoot() {
+        var itemRand = Math.random();
+
+        var findAbleItems = [];
+        items.forEach( function(item) {
+          console.log("in a loop!", item);
+
+          if(item.chance > itemRand) {
+            findAbleItems.push(item);
+          }
+        });
+
+        if(findAbleItems == 0) {
+          console.log("no");
+        } else {
+          var randItemNumber = Math.floor(Math.random() * findAbleItems.length);
+          console.log(findAbleItems[randItemNumber]);
+        }
+      }
+
+      //Outputting Messages
+
+      var outputDiv = document.getElementById("output");
+
+      function textBox() {
+        outputDiv.innerHTML = "<p>" + message + "</p>" + outputDiv.innerHTML;        
+      }
+    </script>
+  </body>
+</html>
