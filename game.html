@@ -53,14 +53,16 @@
       
       // Attack function
 			
-			document.getElementById("attack").addEventListener("click", skirmish);
+			document.getElementById("attack").addEventListener("click", skirmish, randomNum);
       
       var playerHP = game.user.hp;
       var enemyHP = game.current_enemy.hp;
       
 			function skirmish() {
-				playerHP = playerHP - game.current_enemy.dmg;
-				enemyHP = enemyHP - game.user.dmg;
+        userDmg = randomNum(game.user.dmg) + 1;
+
+        playerHP = playerHP - game.current_enemy.dmg;
+				enemyHP = enemyHP - userDmg;
 				
 				if(playerHP <= 0) {
 					alert("You have died!");
