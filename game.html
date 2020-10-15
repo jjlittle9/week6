@@ -1,120 +1,130 @@
+<!DOCTYPE html>
 <html>
-
-<head>
-  <title>Week 5 - DnD</title>
-  
-  <style>
-    div#output {
+	<head>
+		<title>Week 5 - DnD</title>
+		<style>
+			#enemyPic {
+				height: 250px;
+				width: 350px;
+			}
+			#output {
 				width: 600px;
 				height: 200px;
-				background-color: #FFF8E7;
+				background-color: #e7edc0;
 				overflow-y: scroll;
-    }
-  </style>
-</head>
-
-<body>
-  <script src="player.js"></script>
-  <script src="monsters.js"></script>
-  
-  <h1>DnD</h1>
-  
-  <p id="on_page"> </p>
-  
-  <button id="attack">Attack</button>
-  <button id="heal">Drink Potion</button>
-  
-  <div id="output"></div>
-  
-  <script>
-    var message;
-    var text = document.getElementById("on_page");
-
-    var game = {
-      user: player,
-      monsters: listOfMonsters
-    }
-
-    function random(maxNumber) {
-      return Math.floor(Math.random() * maxNumber);
-    }
+			}
+		</style>
+	</head>
+	<body>
+    <script src="player.js"></script>
+		<script src="monsters.js"></script>
+    <script src="items.js"></script>
     
-    var current_enemy_index = random(game.monsters.length);
-    var hero = game.user.name;
-    
-    var current_enemy = game.monsters[current_enemy_index].name;
-    var current_enemy_hp = game.monsters[current_enemy_index].hp;
-    
-    var current_enemy_dmg = game.monsters[current_enemy_index].dmg;
-    
-    var hero_dmg;
-    var current_hero_hp = game.user.hp;
+		<h1>Temple of Virsen</h1>
+		
+		<p id="playerStat"> </p>
+		
+		<p id="enemyStat"> </p>
+		
+		<img src="" id="enemyPic"> </img>
+		
+		<button type="button" id="attack">Attack</button>
+		
+		<button type="button" id="heal">Drink Potion</button>
+		
+		<div id="output"> </div>
+		
+		<script>
+      // get enemy / setup variables
 
-    var attack = document.getElementById("attack");
-    attack.addEventListener("click", skirmish, random);
-
-    var heal = document.getElementById("heal");
-    heal.addEventListener("click", drink_potion);
-    
-    function skirmish(attack) {
-      hero_dmg =  random(game.user.dmg) + 1
-
-      current_enemy_hp -= hero_dmg;
-      current_hero_hp -= current_enemy_dmg;
-
-      if (current_enemy_hp <= 0) {
-        pickLoot();
-        message = "Congrats you won!";
-      } else if (current_hero_hp <= 0) {
-        message = "You lose!";
+			function randomNum(maxNum) {
+				return Math.floor(Math.random() * maxNum);  
+			}
+			
+			var current_enemy_index = randomNum(monsters.length);
+			var	current_enemy = monsters[current_enemy_index];
+			document.querySelector("#enemyPic").src = current_enemy.image
+			
+			var game = {
+				user: player,
+				enemies: monsters,
+				current_enemy: current_enemy
       }
       
-      display.hud.call();
-    }
-    
-    function drink_potion(heal) {
-      if(game.user.has_potion == true) {
-        game.user.has_potion = false;
-        current_hero_hp += 10;
-      } else {
-      alert("You do not have any potions to use.")
-      }
-      display.hud.call();
-    }
-    
-    function pickLoot() {
-        var itemRand = Math.random();
-
-        var findAbleItems = [];
-        items.forEach( function(item) {
-          console.log("in a loop!", item);
-
-          if(item.chance > itemRand) {
-            findAbleItems.push(item);
-          }
-        });
-
-        if(findAbleItems == 0) {
-          console.log("no");
-        } else {
-          var randItemNumber = Math.floor(Math.random() * findAbleItems.length);
-          console.log(findAbleItems[randItemNumber]);
-        }
-      }
-
-    var display = {
-      hud: function() {
-        return this.text.innerHTML = current_enemy + "<br>" + "Enemy HP: " + current_enemy_hp + "<br>" + hero +  "<br>" + " HP: " + current_hero_hp;
-      }
-    }
-    
-    var outputDiv = document.getElementById("output");
+      // Attack function
 			
-    function createOutput(message) {
-        outputDiv.innerHTML = "<p>" + message + "</p>" + outputDiv.innerHTML;
-    }
+			document.getElementById("attack").addEventListener("click", skirmish);
+      
+      var playerHP = game.user.hp;
+      var enemyHP = game.current_enemy.hp;
+      
+			function skirmish() {
+				playerHP = playerHP - game.current_enemy.dmg;
+				enemyHP = enemyHP - game.user.dmg;
+				
+				if(playerHP <= 0) {
+					alert("You have died!");
+				}
+				else if (enemyHP <= 0) {
+					alert("You have defeated the enemy!");
+					lootDrops();
+				}
+				
+				updateHP();
+      }
+      
+      // Heal function
+      
+			document.getElementById("heal").addEventListener("click", drinkPotion);
+			
+			function drinkPotion() {
+				if (player.has_potion == true) {
+					player.has_potion = false;
+					playerHP += 10;
+					updateHP();
+				}
+				else {
+					alert("You don't have any potion to use!");
+				}
+      }
+      
+      // Loot function / Output message into box
+				
+			function lootDrops() {
+				
+				var chanceNumber = Math.random();
+				console.log(chanceNumber);
+				
+				var possibleItems = [];
+				items.forEach(function(items) {
+				console.log("in a loop!", items);
+					if (items.chance > chanceNumber) {
+						console.log("item can be found");
+						possibleItems.push(items);
+					}
+				});
+				
+				divTag = document.getElementById("output");
+				
+				if (possibleItems.length == 0) {
+					divTag.innerHTML = "The monster had no loot.";
+					
+				}
+				else {
+					var randomItemNumber = Math.floor(Math.random() * possibleItems.length);
+					divTag.innerHTML = '<p>' + "you found a " + possibleItems[randomItemNumber].name + "." + '</p>' + divTag.innerHTML;
+				}
+      }
 
-  </script>
-</body>
-
+      // Updating hp
+      
+      function updateHP() {
+				document.getElementById("playerStat").innerText = player.name + "  HP: " + playerHP;
+				document.getElementById("enemyStat").innerText = monsters[current_enemy_index].name + "  HP: " + enemyHP;
+			}
+			
+			updateHP();
+			
+		</script>
+	</body>
 </html>
