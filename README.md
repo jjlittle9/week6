@@ -1,3 +1,5 @@
+I restructured my code as I was having problems updating and understanding what I had done before.
+
 Dynamic images
 
     Add an "image" key to your enemy objects
